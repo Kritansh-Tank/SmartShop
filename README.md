@@ -28,35 +28,8 @@ Each agent has specific tools and capabilities for its domain, and they communic
 ### Prerequisites
 
 - Python 3.8 or higher
-- Access to an Ollama server (default: http://35.154.211.247:11434)
+- Access to an Ollama server (default: http://localhost:11434)
 - The dataset files (or use sample data)
-
-### Setup
-
-1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd smartshop
-   ```
-
-2. Install dependencies:
-   ```
-   pip install -r requirements.txt
-   ```
-
-3. Initialize the system:
-   ```
-   python run_smartshop.py init
-   ```
-
-4. Load data (either from the dataset or create sample data):
-   ```
-   # Load from dataset
-   python run_smartshop.py load-data
-   
-   # Or, create sample data
-   python run_smartshop.py load-data --sample
-   ```
 
 ## Usage
 
@@ -64,7 +37,7 @@ Each agent has specific tools and capabilities for its domain, and they communic
 
 Run the web application:
 ```bash
-python run_web_app.py
+python run_smartshop.py
 ```
 
 Then open your browser and navigate to http://localhost:5000 to access the SmartShop web interface. The web UI provides a user-friendly way to:
@@ -74,28 +47,6 @@ Then open your browser and navigate to http://localhost:5000 to access the Smart
 - Analyze products and their relationships
 - Generate personalized recommendations
 - Explore category trends and seasonal recommendations
-
-### Command Line Interface
-
-```bash
-# Get personalized recommendations
-python run_smartshop.py recommend C1000
-
-# Get recommendations with context
-python run_smartshop.py recommend C1000 --context '{"occasion": "birthday"}'
-
-# Analyze a customer profile
-python run_smartshop.py customer C1000
-
-# Analyze a product
-python run_smartshop.py product P2000
-
-# Get category trend analysis
-python run_smartshop.py category "Electronics"
-
-# Get seasonal recommendations
-python run_smartshop.py seasonal C1000 "Summer"
-```
 
 ## Project Structure
 
@@ -176,7 +127,7 @@ SmartShop uses Ollama to provide local LLM capabilities for generating recommend
 
 4. Alternatively, you can use the automated setup script:
    ```bash
-   python run_smartshop.py check-ollama
+   python run_smartshop.py --test
    ```
 
 ## Getting Started
@@ -188,7 +139,7 @@ SmartShop uses Ollama to provide local LLM capabilities for generating recommend
 
 2. Run the web application:
    ```bash
-   python run_web_app.py
+   python run_smartshop.py
    ```
 
 3. Open your browser and navigate to:
@@ -209,27 +160,6 @@ You can configure the system by modifying `smartshop/config.py`:
 - `OLLAMA_BASE_URL`: The URL of your Ollama instance (default: "http://localhost:11434")
 - `OLLAMA_LLM_MODEL`: The LLM model to use (default: "qwen2.5:0.5b")
 - Other system settings like embedding dimensions, recommendation thresholds, etc.
-
-## Troubleshooting Ollama Issues
-
-If you experience issues with Ollama:
-
-1. Check if the Ollama server is running with:
-   ```bash
-   curl http://localhost:11434
-   ```
-
-2. Make sure the required model is available:
-   ```bash
-   ollama list
-   ```
-
-3. If the model is not available, pull it:
-   ```bash
-   ollama pull qwen2.5:0.5b
-   ```
-
-4. Use the built-in Ollama status checker in the web application by clicking on "Check Ollama Status" in the navigation menu.
 
 ## License
 
