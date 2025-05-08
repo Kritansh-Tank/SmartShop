@@ -27,6 +27,7 @@ Each agent has specific tools and capabilities for its domain, and they communic
 ## Screenshots
 
 - **Home**
+
 ![Home](images/Home.png)
 
 - **Dashboard**
