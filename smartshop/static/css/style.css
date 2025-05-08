@@ -1,0 +1,171 @@
+/* Custom Styles for SmartShop Web UI */
+
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    margin-top: auto;
+    width: 100%;
+    left: 0;
+    right: 0;
+    position: relative;
+}
+
+.navbar-brand {
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+}
+
+.hero-title {
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+}
+
+.hero-subtitle {
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    margin-bottom: 1.5rem;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    font-weight: 600;
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.agent-card .card-header {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.agent-card .card-footer {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.recommendation-card {
+    border-left: 4px solid var(--accent-color);
+}
+
+.result-section {
+    background-color: var(--light-color);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.step-container {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 1.5rem;
+}
+
+.step-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--primary-color);
+}
+
+.step-number {
+    position: absolute;
+    left: -15px;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Form Styling */
+.form-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+/* Table Styling */
+.table-responsive {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+/* Badge Styling */
+.badge-primary {
+    background-color: var(--primary-color);
+}
+
+.badge-info {
+    background-color: var(--accent-color);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+} 

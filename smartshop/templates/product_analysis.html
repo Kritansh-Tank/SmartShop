@@ -1,0 +1,57 @@
+{% extends 'base.html' %} {% block title %}Product Analysis - SmartShop{%
+endblock %} {% block content %}
+<div class="container">
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0"><i class="fas fa-search me-2"></i>Product Analysis</h4>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Analyze product details, find similar and complementary products, and
+        generate insights using the Product Agent.
+      </p>
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Select a product to analyze its details, discover similar products, and
+        get category insights.
+      </div>
+
+      <form
+        method="post"
+        action="{{ url_for('product_analysis') }}"
+        class="form-container"
+      >
+        <div class="mb-4">
+          <label for="product_id" class="form-label fw-bold">Product</label>
+          <select
+            class="form-select"
+            id="product_id"
+            name="product_id"
+            required
+          >
+            <option value="" selected disabled>Select a product</option>
+            <!-- JavaScript will populate this dynamically -->
+          </select>
+          <div class="form-text">
+            The Product Agent will analyze this product and provide
+            comprehensive insights
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-brain me-2"></i>Generate Product Analysis
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Powered by Product Agent</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

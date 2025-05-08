@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}Recommendation Results - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-thumbs-up me-2"></i>Personalized Recommendations for {{ results.customer_id }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if results.context %}
+                    <div class="mb-4">
+                        <span class="badge bg-info mb-2">Context</span>
+                        <div class="d-flex gap-2">
+                            {% for key, value in results.context.items() %}
+                            <span class="badge bg-light text-dark border">
+                                {{ key }}: {{ value }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="result-section">
+                        <h5><i class="fas fa-shopping-bag me-2"></i>Personalized Shopping Guide</h5>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                {{ results.personalized_shopping_guide|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>')|replace('\n1. ', '</p><p>1. ')|replace('1. ', '<p>1. ') }}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h5><i class="fas fa-gift me-2"></i>Top Recommended Products</h5>
+                        
+                        <div class="row">
+                            {% for recommendation in results.recommendations %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100 recommendation-card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">{{ recommendation.product_id }}</span>
+                                        <span class="badge bg-primary">Score: {{ '%.2f'|format(recommendation.score) }}</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6>{{ recommendation.category }} - {{ recommendation.subcategory }}</h6>
+                                        <p class="mb-1">
+                                            <strong>Brand:</strong> {{ recommendation.brand }}
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Price:</strong> ${{ '%.2f'|format(recommendation.price) }}
+                                        </p>
+                                        {% if recommendation.product_rating %}
+                                        <p class="mb-0">
+                                            <strong>Rating:</strong> 
+                                            {% for i in range(5) %}
+                                                {% if i < recommendation.product_rating|int %}
+                                                <i class="fas fa-star text-warning"></i>
+                                                {% elif i+0.5 < recommendation.product_rating %}
+                                                <i class="fas fa-star-half-alt text-warning"></i>
+                                                {% else %}
+                                                <i class="far fa-star text-warning"></i>
+                                                {% endif %}
+                                            {% endfor %}
+                                            ({{ '%.1f'|format(recommendation.product_rating) }})
+                                        </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    {% if results.customer_interests %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-brain me-2"></i>Customer Interest Analysis</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                {{ results.customer_interests|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>')|replace('\n1. ', '</p><p>1. ')|replace('1. ', '<p>1. ') }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('recommendations') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>New Recommendations
+                        </a>
+                        <a href="{{ url_for('customer_analysis') }}?customer_id={{ results.customer_id }}" class="btn btn-outline-primary">
+                            <i class="fas fa-user-check me-2"></i>Analyze Customer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,205 @@
+{% extends 'results_template.html' %}
+
+{% block extra_css %}
+<style>
+    .trend-chart {
+        height: 250px;
+        margin-bottom: 1.5rem;
+    }
+    
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    .trend-arrow-up {
+        color: #28a745;
+    }
+    
+    .trend-arrow-down {
+        color: #dc3545;
+    }
+    
+    .trend-arrow-neutral {
+        color: #6c757d;
+    }
+    
+    .trend-value {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize charts if data is available
+        if (document.getElementById('priceTrendChart')) {
+            const priceTrendCtx = document.getElementById('priceTrendChart').getContext('2d');
+            const priceTrendChart = new Chart(priceTrendCtx, {
+                type: 'line',
+                data: {{ price_trend_data|tojson }},
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Price Trends Over Time'
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Average Price ($)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        if (document.getElementById('popularityChart')) {
+            const popularityCtx = document.getElementById('popularityChart').getContext('2d');
+            const popularityChart = new Chart(popularityCtx, {
+                type: 'bar',
+                data: {{ popularity_data|tojson }},
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Product Popularity'
+                        },
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Popularity Score'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Product'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
+
+{% block title %}Category Analysis - {{ results.category }} - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-chart-line me-2"></i>Category Analysis: {{ results.category }}</h4>
+                <a href="{{ url_for('category_analysis') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Categories
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Price Trend Chart -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Price Trends</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="priceTrendChart" class="trend-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Category Insights -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Category Insights</h5>
+                        </div>
+                        <div class="card-body">
+                            {{ results.insights|safe|nl2br }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trending Products -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Trending Products</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <canvas id="popularityChart" class="trend-chart"></canvas>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="list-group">
+                                        {% for product in results.trending_products %}
+                                        <a href="{{ url_for('product_analysis') }}?product_id={{ product.product_id }}" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">{{ product.product_id }}</h6>
+                                                <small>${{ '%.2f'|format(product.price) }}</small>
+                                            </div>
+                                            <p class="mb-1">{{ product.category }} - {{ product.subcategory }}</p>
+                                            <small>{{ product.brand }}</small>
+                                        </a>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Trend Analysis -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Trend Analysis</h5>
+                        </div>
+                        <div class="card-body">
+                            {{ results.trend_analysis|safe|nl2br }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Powered by Coordination Agent</span>
+                <a href="{{ url_for('category_analysis') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-chart-bar me-2"></i>New Category Analysis
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

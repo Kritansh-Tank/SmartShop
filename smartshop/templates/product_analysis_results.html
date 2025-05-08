@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Product Analysis Results - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-search me-2"></i>Product Analysis for {{ results.product_id }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="result-section">
+                        <h5><i class="fas fa-box me-2"></i>Product Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p><strong>Product ID:</strong> {{ results.details.product_id }}</p>
+                                        <p><strong>Category:</strong> {{ results.details.category }}</p>
+                                        <p><strong>Subcategory:</strong> {{ results.details.subcategory }}</p>
+                                        <p><strong>Brand:</strong> {{ results.details.brand }}</p>
+                                        <p><strong>Price:</strong> ${{ '%.2f'|format(results.details.price|float) }}</p>
+                                        <p>
+                                            <strong>Rating:</strong> 
+                                            {% if results.details.product_rating %}
+                                                {% for i in range(5) %}
+                                                    {% if i < results.details.product_rating|int %}
+                                                    <i class="fas fa-star text-warning"></i>
+                                                    {% elif i+0.5 < results.details.product_rating %}
+                                                    <i class="fas fa-star-half-alt text-warning"></i>
+                                                    {% else %}
+                                                    <i class="far fa-star text-warning"></i>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                ({{ '%.1f'|format(results.details.product_rating|float) }})
+                                            {% else %}
+                                                <span class="text-muted">No rating</span>
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Product Report</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ results.report|safe|replace('\n', '<br>')|truncate(500) }}</p>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fullReport">
+                                            Read full report
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapse mt-3" id="fullReport">
+                            <div class="card">
+                                <div class="card-body">
+                                    {{ results.report|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>')|replace('\n1. ', '</p><p>1. ')|replace('1. ', '<p>1. ') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if results.similar_products %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-clone me-2"></i>Similar Products</h5>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p>{{ results.similar_products.analysis|safe|replace('\n', '<br>')|truncate(200) }}</p>
+                                <button class="btn btn-sm btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#fullSimilarAnalysis">
+                                    Read full analysis
+                                </button>
+                                
+                                <div class="collapse mb-3" id="fullSimilarAnalysis">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            {{ results.similar_products.analysis|safe|replace('\n', '<br>') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    {% for product in results.similar_products.similar_products %}
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">{{ product.product_id }}</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p><strong>Category:</strong> {{ product.category }}</p>
+                                                <p><strong>Subcategory:</strong> {{ product.subcategory }}</p>
+                                                <p><strong>Brand:</strong> {{ product.brand }}</p>
+                                                <p><strong>Price:</strong> ${{ '%.2f'|format(product.price|float) }}</p>
+                                                <p><strong>Rating:</strong> {{ '%.1f'|format(product.product_rating|float) }}</p>
+                                                <div class="d-grid">
+                                                    <a href="{{ url_for('product_analysis') }}?product_id={{ product.product_id }}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-search me-1"></i>Analyze
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if results.complementary_products %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-puzzle-piece me-2"></i>Complementary Products</h5>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p>{{ results.complementary_products.analysis|safe|replace('\n', '<br>')|truncate(200) }}</p>
+                                <button class="btn btn-sm btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#fullComplementaryAnalysis">
+                                    Read full analysis
+                                </button>
+                                
+                                <div class="collapse mb-3" id="fullComplementaryAnalysis">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            {{ results.complementary_products.analysis|safe|replace('\n', '<br>') }}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    {% for product in results.complementary_products.complementary_products %}
+                                    <div class="col-md-6 col-lg-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <h6 class="mb-0">{{ product.product_id }}</h6>
+                                            </div>
+                                            <div class="card-body">
+                                                <p><strong>Category:</strong> {{ product.category }}</p>
+                                                <p><strong>Subcategory:</strong> {{ product.subcategory }}</p>
+                                                <p><strong>Brand:</strong> {{ product.brand }}</p>
+                                                <p><strong>Price:</strong> ${{ '%.2f'|format(product.price|float) }}</p>
+                                                <p><strong>Rating:</strong> {{ '%.1f'|format(product.product_rating|float) }}</p>
+                                                <div class="d-grid">
+                                                    <a href="{{ url_for('product_analysis') }}?product_id={{ product.product_id }}" 
+                                                       class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-search me-1"></i>Analyze
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if results.category_insights %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-chart-line me-2"></i>Category Insights</h5>
+                        <div class="card">
+                            <div class="card-body">
+                                {{ results.category_insights|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>') }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('product_analysis') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>New Analysis
+                        </a>
+                        <a href="{{ url_for('category_analysis') }}?category={{ results.details.category }}" class="btn btn-outline-primary">
+                            <i class="fas fa-chart-bar me-2"></i>Category Analysis
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

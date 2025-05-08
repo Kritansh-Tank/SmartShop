@@ -1,0 +1,68 @@
+{% extends 'base.html' %} {% block title %}Welcome to SmartShop{% endblock %} {%
+block content %}
+<header class="text-center my-5">
+  <h1 class="display-4">
+    <i class="fas fa-shopping-cart me-3"></i>SmartShop
+  </h1>
+  <p class="lead">AI-Powered Personalized E-Commerce Recommendation System</p>
+</header>
+
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-body text-center p-5">
+        <h2 class="mb-4">Welcome to SmartShop</h2>
+        <p class="lead">
+          SmartShop uses advanced AI agents to provide hyper-personalized
+          product recommendations and insights for e-commerce businesses and
+          their customers.
+        </p>
+        <div class="my-4">
+          <a href="{{ url_for('recommendations') }}" class="btn btn-primary btn-lg">
+            <i class="fas fa-brain me-2"></i>Go to Recommendations
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row mb-5">
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-user-check fa-3x text-primary mb-3"></i>
+        <h3>Customer Analysis</h3>
+        <p>
+          Understand customer behavior, preferences, and shopping patterns to
+          deliver personalized experiences.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-lightbulb fa-3x text-primary mb-3"></i>
+        <h3>Smart Recommendations</h3>
+        <p>
+          Generate context-aware, personalized product recommendations for
+          each unique customer.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card h-100">
+      <div class="card-body text-center">
+        <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+        <h3>Trend Analysis</h3>
+        <p>
+          Discover product trends, seasonal patterns, and category insights to
+          optimize your inventory.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

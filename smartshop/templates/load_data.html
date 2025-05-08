@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+
+{% block title %}Load Data - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-database me-2"></i>Load Data</h4>
+        </div>
+        <div class="card-body">
+            <p class="lead">
+                Load customer and product data into the SmartShop system for analysis and recommendations.
+            </p>
+            
+            {% if not system_status.database_exists %}
+            <div class="alert alert-danger mb-4">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                You need to initialize the system before loading data.
+                <a href="{{ url_for('initialize') }}" class="alert-link">Initialize system now</a>
+            </div>
+            {% else %}
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Choose a data source below. Loading data will replace any existing data in the system.
+            </div>
+            
+            <form method="post" action="{{ url_for('load_data') }}" enctype="multipart/form-data">
+                <div class="card mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Data Source Options</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Option 1: Load from dataset files -->
+                        <div class="form-check custom-control custom-radio mb-3">
+                            <input class="form-check-input" type="radio" name="load_option" id="load_csv" value="csv" checked>
+                            <label class="form-check-label" for="load_csv">
+                                <strong>Load from dataset CSV files</strong>
+                            </label>
+                            <div class="form-text ms-4">
+                                Imports data from the default CSV files in the Dataset directory.
+                                <div class="small mt-1">
+                                    <i class="fas fa-info-circle me-1 text-info"></i>
+                                    Files: <code>customer_data_collection.csv</code> and <code>product_recommendation_data.csv</code>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Option 2: Upload custom files -->
+                        <div class="form-check custom-control custom-radio mb-3">
+                            <input class="form-check-input" type="radio" name="load_option" id="load_upload" value="upload">
+                            <label class="form-check-label" for="load_upload">
+                                <strong>Upload custom CSV files</strong>
+                            </label>
+                            <div class="form-text ms-4">
+                                Upload your own customer and product CSV files.
+                            </div>
+                            <div class="ms-4 mt-2" id="upload-fields" style="display: none;">
+                                <div class="mb-3">
+                                    <label for="customer_file" class="form-label">Customer Data CSV</label>
+                                    <input class="form-control" type="file" id="customer_file" name="customer_file" accept=".csv">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="product_file" class="form-label">Product Data CSV</label>
+                                    <input class="form-control" type="file" id="product_file" name="product_file" accept=".csv">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Option 3: Generate sample data -->
+                        <div class="form-check custom-control custom-radio">
+                            <input class="form-check-input" type="radio" name="load_option" id="load_sample" value="sample">
+                            <label class="form-check-label" for="load_sample">
+                                <strong>Generate sample data</strong>
+                            </label>
+                            <div class="form-text ms-4">
+                                Creates synthetic data for testing purposes.
+                            </div>
+                            <div class="ms-4 mt-2" id="sample-fields" style="display: none;">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="customer_count" class="form-label">Number of Customers</label>
+                                        <input type="number" class="form-control" id="customer_count" name="customer_count" value="50" min="10" max="200">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="product_count" class="form-label">Number of Products</label>
+                                        <input type="number" class="form-control" id="product_count" name="product_count" value="100" min="20" max="500">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg" {% if not system_status.database_exists %}disabled{% endif %}>
+                        <i class="fas fa-upload me-2"></i>Load Data Now
+                    </button>
+                </div>
+            </form>
+            {% endif %}
+            
+            {% if system_status.has_data %}
+            <div class="card mt-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Current Data Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Customers</h6>
+                                    <p class="card-text display-4">{{ system_status.customer_count }}</p>
+                                    <a href="{{ url_for('list_customers') }}" class="btn btn-sm btn-outline-primary">View Customers</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title">Products</h6>
+                                    <p class="card-text display-4">{{ system_status.product_count }}</p>
+                                    <a href="{{ url_for('list_products') }}" class="btn btn-sm btn-outline-primary">View Products</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <a href="{{ url_for('initialize') }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Initialize
+                </a>
+                {% if system_status.has_data %}
+                <a href="{{ url_for('home') }}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-tachometer-alt me-1"></i>Go to Dashboard
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const uploadFields = document.getElementById('upload-fields');
+        const sampleFields = document.getElementById('sample-fields');
+        const loadUpload = document.getElementById('load_upload');
+        const loadSample = document.getElementById('load_sample');
+        const loadCsv = document.getElementById('load_csv');
+        
+        function updateVisibility() {
+            uploadFields.style.display = loadUpload.checked ? 'block' : 'none';
+            sampleFields.style.display = loadSample.checked ? 'block' : 'none';
+        }
+        
+        loadUpload.addEventListener('change', updateVisibility);
+        loadSample.addEventListener('change', updateVisibility);
+        loadCsv.addEventListener('change', updateVisibility);
+        
+        // Initial visibility
+        updateVisibility();
+    });
+</script>
+{% endblock %}
+{% endblock %} 

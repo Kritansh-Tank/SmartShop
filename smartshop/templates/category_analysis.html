@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% block title %}Category Trend Analysis - SmartShop{%
+endblock %} {% block content %}
+<div class="container">
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-chart-line me-2"></i>Category Trend Analysis
+      </h4>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Analyze trends in product categories and generate insights into popular
+        products, pricing patterns, and future trends.
+      </p>
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Select a product category to analyze current trends, popular items, and
+        get AI-powered predictions.
+      </div>
+
+      <form
+        method="post"
+        action="{{ url_for('category_analysis') }}"
+        class="form-container"
+      >
+        <div class="mb-4">
+          <label for="category" class="form-label fw-bold"
+            >Product Category</label
+          >
+          <select class="form-select" id="category" name="category" required>
+            <option value="" selected disabled>Select a category</option>
+            {% if categories %} {% for category in categories %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %} {% else %}
+            <option value="" disabled>No categories available</option>
+            {% endif %}
+          </select>
+          <div class="form-text">
+            The Coordination Agent will analyze this category and provide
+            comprehensive trend insights
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-brain me-2"></i>Generate Category Analysis
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Powered by Coordination Agent</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

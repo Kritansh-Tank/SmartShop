@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Customer Analysis Results - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="fas fa-user-check me-2"></i>Customer Analysis for {{ results.customer_id }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="result-section">
+                        <h5><i class="fas fa-id-card me-2"></i>Customer Profile</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p><strong>Customer ID:</strong> {{ results.profile.customer_id }}</p>
+                                        <p><strong>Age:</strong> {{ results.profile.age }}</p>
+                                        <p><strong>Gender:</strong> {{ results.profile.gender }}</p>
+                                        <p><strong>Location:</strong> {{ results.profile.location }}</p>
+                                        <p><strong>Segment:</strong> <span class="badge bg-info">{{ results.profile.customer_segment }}</span></p>
+                                        <p><strong>Avg. Order Value:</strong> ${{ '%.2f'|format(results.profile.avg_order_value|float) }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Summary</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">{{ results.summary|safe|replace('\n', '<br>')|truncate(500) }}</p>
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fullSummary">
+                                            Read full summary
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="collapse mt-3" id="fullSummary">
+                            <div class="card">
+                                <div class="card-body">
+                                    {{ results.summary|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>')|replace('\n1. ', '</p><p>1. ')|replace('1. ', '<p>1. ') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h5><i class="fas fa-history me-2"></i>Browsing & Purchase History Analysis</h5>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Browsing Analysis</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {{ results.browsing_analysis|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>') }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-header">
+                                        <h6 class="mb-0">Purchase Analysis</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        {{ results.purchase_analysis|safe|replace('\n', '<br>')|replace('**', '<strong>')|replace('*', '</strong>')|replace('# ', '<h5>')|replace('\n# ', '</h5><h5>')|replace('\n## ', '</h5><h6>')|replace('## ', '<h6>') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {% if results.similar_customers %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-users me-2"></i>Similar Customers</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Customer ID</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>Location</th>
+                                        <th>Segment</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for customer in results.similar_customers %}
+                                    <tr>
+                                        <td>{{ customer.customer_id }}</td>
+                                        <td>{{ customer.age }}</td>
+                                        <td>{{ customer.gender }}</td>
+                                        <td>{{ customer.location }}</td>
+                                        <td>
+                                            <span class="badge bg-info">{{ customer.customer_segment }}</span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ url_for('customer_analysis') }}?customer_id={{ customer.customer_id }}" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-search me-1"></i>Analyze
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
+                    
+                    {% if results.recommendations %}
+                    <div class="result-section">
+                        <h5><i class="fas fa-thumbs-up me-2"></i>Recommended Products</h5>
+                        <div class="row">
+                            {% for recommendation in results.recommendations %}
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card h-100 recommendation-card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <span class="fw-bold">{{ recommendation.product_id }}</span>
+                                        <span class="badge bg-primary">Score: {{ '%.2f'|format(recommendation.score) }}</span>
+                                    </div>
+                                    <div class="card-body">
+                                        <h6>{{ recommendation.category }} - {{ recommendation.subcategory }}</h6>
+                                        <p class="mb-1">
+                                            <strong>Brand:</strong> {{ recommendation.brand }}
+                                        </p>
+                                        <p class="mb-1">
+                                            <strong>Price:</strong> ${{ '%.2f'|format(recommendation.price|float) }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="{{ url_for('customer_analysis') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>New Analysis
+                        </a>
+                        <a href="{{ url_for('recommendations') }}?customer_id={{ results.customer_id }}" class="btn btn-outline-primary">
+                            <i class="fas fa-thumbs-up me-2"></i>Get Recommendations
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

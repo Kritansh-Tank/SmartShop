@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="{{ icon_class }} me-2"></i>{{ title }}</h4>
+        </div>
+        <div class="card-body">
+            <div class="mb-4">
+                <h5 class="border-bottom pb-2">{{ subtitle }}</h5>
+                <p class="lead">{{ description }}</p>
+            </div>
+            
+            {% if result_html %}
+                {{ result_html|safe }}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>No results available.
+                </div>
+            {% endif %}
+            
+            {% if error %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle me-2"></i>{{ error }}
+                </div>
+            {% endif %}
+            
+            {% if recommendations %}
+                <div class="recommendations-container">
+                    <h5 class="border-bottom pb-2 mb-3">Recommended Products</h5>
+                    <div class="row">
+                        {% for recommendation in recommendations %}
+                            <div class="col-md-4 mb-4">
+                                <div class="card h-100 product-card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">{{ recommendation.product_name }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text"><strong>Category:</strong> {{ recommendation.category }}</p>
+                                        <p class="card-text"><strong>Price:</strong> ${{ recommendation.price }}</p>
+                                        {% if recommendation.score %}
+                                            <div class="mb-2">
+                                                <div class="progress">
+                                                    <div class="progress-bar bg-success" role="progressbar" 
+                                                         style="width: {{ recommendation.score * 100 }}%"
+                                                         aria-valuenow="{{ recommendation.score * 100 }}" 
+                                                         aria-valuemin="0" aria-valuemax="100">
+                                                        {{ (recommendation.score * 100)|round|int }}%
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted">Match Score</small>
+                                            </div>
+                                        {% endif %}
+                                        {% if recommendation.explanation %}
+                                            <p class="mt-2"><em>{{ recommendation.explanation }}</em></p>
+                                        {% endif %}
+                                    </div>
+                                    <div class="card-footer">
+                                        <a href="{{ url_for('product_analysis', product_id=recommendation.product_id) }}" 
+                                           class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-info-circle me-1"></i>Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if insights %}
+                <div class="insights-container mt-4">
+                    <h5 class="border-bottom pb-2 mb-3">Key Insights</h5>
+                    <div class="row">
+                        {% for insight in insights %}
+                            <div class="col-md-6 mb-3">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <h6 class="mb-0">{{ insight.title }}</h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <p>{{ insight.content }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+            
+            {% if analysis_summary %}
+                <div class="summary-container mt-4">
+                    <h5 class="border-bottom pb-2 mb-3">Analysis Summary</h5>
+                    <div class="card">
+                        <div class="card-body">
+                            {{ analysis_summary|safe }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Generated by {{ agent_name }}</span>
+                <div>
+                    <a href="{{ back_link }}" class="btn btn-outline-secondary btn-sm me-2">
+                        <i class="fas fa-arrow-left me-1"></i>Back
+                    </a>
+                    <a href="{{ url_for('home') }}" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-home me-1"></i>Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,70 @@
+{% extends 'base.html' %} {% block title %}Seasonal Recommendations -
+SmartShop{% endblock %} {% block content %}
+<div class="container">
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h4 class="mb-0">
+        <i class="fas fa-calendar-alt me-2"></i>Seasonal Recommendations
+      </h4>
+    </div>
+    <div class="card-body">
+      <p class="lead">
+        Get personalized product recommendations based on the current season and
+        customer preferences.
+      </p>
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Select a customer and season to receive tailored seasonal product
+        recommendations.
+      </div>
+
+      <form
+        method="post"
+        action="{{ url_for('seasonal_recommendations') }}"
+        class="form-container"
+      >
+        <div class="mb-4">
+          <label for="customer_id" class="form-label fw-bold">Customer</label>
+          <select
+            class="form-select"
+            id="customer_id"
+            name="customer_id"
+            required
+          >
+            <option value="" selected disabled>Select a customer</option>
+            <!-- JavaScript will populate this dynamically -->
+          </select>
+        </div>
+
+        <div class="mb-4">
+          <label for="season" class="form-label fw-bold">Season</label>
+          <select class="form-select" id="season" name="season" required>
+            <option value="" selected disabled>Select a season</option>
+            <option value="Spring">Spring</option>
+            <option value="Summer">Summer</option>
+            <option value="Fall">Fall</option>
+            <option value="Winter">Winter</option>
+          </select>
+          <div class="form-text">
+            The Coordination Agent will generate recommendations suited for this
+            season
+          </div>
+        </div>
+
+        <div class="d-grid gap-2">
+          <button type="submit" class="btn btn-primary btn-lg">
+            <i class="fas fa-magic me-2"></i>Generate Seasonal Recommendations
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Powered by Coordination Agent</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}Products - SmartShop{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-boxes me-2"></i>Product Management</h4>
+                <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <p class="lead">
+                View and manage products in the system.
+            </p>
+            
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                Select a product to view its details or use the action buttons to analyze the product and find similar items.
+            </div>
+            
+            <!-- Filter Controls -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <label for="categoryFilter" class="form-label">Filter by Category</label>
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                        <option value="{{ category }}">{{ category }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="productSearch" class="form-label">Search Products</label>
+                    <input type="text" class="form-control" id="productSearch" placeholder="Enter product name...">
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover table-striped" id="productsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Product Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr data-category="{{ product.category }}">
+                            <td>{{ product.product_id }}</td>
+                            <td>{{ product.product_name }}</td>
+                            <td>
+                                <span class="badge bg-info">{{ product.category }}</span>
+                            </td>
+                            <td>${{ '%.2f'|format(product.price|float) }}</td>
+                            <td>
+                                <div class="rating">
+                                    {% for i in range(5) %}
+                                        {% if i < product.rating|int %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="far fa-star text-warning"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <small class="text-muted ms-1">({{ product.rating }})</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ url_for('product_analysis', product_id=product.product_id) }}" 
+                                       class="btn btn-outline-success">
+                                        <i class="fas fa-search me-1"></i>Analyze
+                                    </a>
+                                    <a href="{{ url_for('category_analysis', category=product.category) }}" 
+                                       class="btn btn-outline-warning">
+                                        <i class="fas fa-chart-line me-1"></i>Category
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% if not products %}
+            <div class="alert alert-warning mt-3">
+                <i class="fas fa-exclamation-triangle me-2"></i>No products found in the database.
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="card-footer">
+            <div class="d-flex justify-content-between align-items-center">
+                <span>Total Products: <strong>{{ products|length }}</strong></span>
+                <div>
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="fas fa-file-export me-1"></i>Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Export Product Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Select the format to export product data:</p>
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('export_products', format='csv') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-csv me-2"></i>Export as CSV
+                    </a>
+                    <a href="{{ url_for('export_products', format='json') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-file-code me-2"></i>Export as JSON
+                    </a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    // Product filtering functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryFilter = document.getElementById('categoryFilter');
+        const productSearch = document.getElementById('productSearch');
+        const productsTable = document.getElementById('productsTable');
+        const rows = productsTable.querySelectorAll('tbody tr');
+        
+        function filterTable() {
+            const selectedCategory = categoryFilter.value.toLowerCase();
+            const searchText = productSearch.value.toLowerCase();
+            
+            rows.forEach(row => {
+                const category = row.getAttribute('data-category').toLowerCase();
+                const productName = row.cells[1].textContent.toLowerCase();
+                
+                const categoryMatch = !selectedCategory || category === selectedCategory;
+                const searchMatch = !searchText || productName.includes(searchText);
+                
+                if (categoryMatch && searchMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        
+        categoryFilter.addEventListener('change', filterTable);
+        productSearch.addEventListener('input', filterTable);
+    });
+</script>
+{% endblock %}
+{% endblock %} 
