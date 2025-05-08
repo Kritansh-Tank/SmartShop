@@ -23,6 +23,17 @@ SmartShop uses a multi-agent system consisting of four main agents:
 
 Each agent has specific tools and capabilities for its domain, and they communicate through a shared SQLite database. The system uses Ollama for LLM-based reasoning and text generation.
 
+
+## Screenshots
+
+- **Home**
+![Home](images/Home.png)
+
+- **Dashboard**
+
+![Dashboard](images/Dashboard.png)
+
+
 ## Installation
 
 ### Prerequisites
