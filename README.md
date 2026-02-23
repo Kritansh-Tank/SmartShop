@@ -176,9 +176,3 @@ You can configure the system by modifying `smartshop/config.py`:
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- This project was created for the Accenture Hackathon
-- The dataset was provided by Accenture
-- Ollama for providing the LLM capabilities 
