@@ -23,18 +23,6 @@ SmartShop uses a multi-agent system consisting of four main agents:
 
 Each agent has specific tools and capabilities for its domain, and they communicate through a shared SQLite database. The system uses Ollama for LLM-based reasoning and text generation.
 
-
-## Screenshots
-
-- **Home**
-
-![Home](images/Home.png)
-
-- **Dashboard**
-
-![Dashboard](images/Dashboard.png)
-
-
 ## Installation
 
 ### Prerequisites
@@ -173,6 +161,16 @@ You can configure the system by modifying `smartshop/config.py`:
 - `OLLAMA_LLM_MODEL`: The LLM model to use (default: "qwen2.5:0.5b")
 - Other system settings like embedding dimensions, recommendation thresholds, etc.
 
+## User Interface
+
+- **Home**
+
+![Home](images/Home.png)
+
+- **Dashboard**
+
+![Dashboard](images/Dashboard.png)
+
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT License - See LICENSE file for details
